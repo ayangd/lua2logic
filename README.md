@@ -27,8 +27,7 @@ Coming soon.
 - [ ] Radar
 - [ ] Sensor
 - [ ] Set
-- [ ] Binary Op
-- [ ] Unary Op
+- [ ] Operator
 - [ ] End
 - [ ] Jump
 
