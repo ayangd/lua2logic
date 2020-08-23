@@ -1,4 +1,5 @@
 test.bat
 testd.bat
 test.lua
-lua2logic\__pycache__
+*.pyc
+*.pyo
