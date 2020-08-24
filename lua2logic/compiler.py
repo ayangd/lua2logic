@@ -1,14 +1,14 @@
-from .functions import *
-from .helpers import *
+from lua2logic.functions import * # pylint: disable=unused-wildcard-import
+from lua2logic.helpers import * # pylint: disable=unused-wildcard-import
 from luaparser import ast
-from luaparser.astnodes import *
+from luaparser.astnodes import * # pylint: disable=unused-wildcard-import
 
 class Compiler():
     def __init__(self):
         pass
     
     def compile(self, src):
-        globalNames = {}
+        globalNames = getFunctions()
         localNames = []
         parsed = ast.parse(src)
         return self._compile(parsed.body, globalNames, localNames)
@@ -23,15 +23,18 @@ class Compiler():
                     if len(l.values) - 1 <= i:
                         val = l.values[i]
                         if type(val) == Call:
-                            val = getFunction(val, globalNames, localNames)
+                            val = evaluate(globalNames, localNames, val)
                             if val == None:
                                 raise Exception(f'Function {l.values[i].func.id} doesn\'t exist.')
                         if type(l) == Assign:
-                            globalNames[l.targets[i].id] = evaluate(globalNames, localNames, val.getReturn())
+                            globalNames[l.targets[i].id] = evaluate(globalNames, localNames, val)
                         else:
-                            localNames[-1][l.targets[i].id] = evaluate(globalNames, localNames, val.getReturn())
+                            localNames[-1][l.targets[i].id] = evaluate(globalNames, localNames, val)
             elif type(l) == Call:
-                buffer = buffer + str(getFunction(l, globalNames, localNames))
+                if l.func.id in globalNames.keys():
+                    func = globalNames[l.func.id]
+                    if (func.external):
+                        buffer = buffer + str(func.call(*tuple(map(lambda x: evaluate(globalNames, localNames, x), l.args))))
         localNames = localNames[:-1]
         return buffer
     
