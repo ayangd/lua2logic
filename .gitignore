@@ -9,7 +9,7 @@ testd.bat
 test.lua
 
 # vscode thing
-.vscode/*
+*/.vscode/
 *.code-workspace
 
 # Local History for Visual Studio Code
