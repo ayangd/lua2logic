@@ -1,5 +1,6 @@
 # lua2logic
 A lua to Mindustry logic text (a.k.a AnukeScript); The text where you get when copying from Mindustry microprocessors.  
+This tool is inspired by [c2logic](https://github.com/SuperStormer/c2logic).  
 This tool is fresh and in alpha state, so expect some hiccups.
 
 ## Dependencies
