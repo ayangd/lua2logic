@@ -7,13 +7,13 @@ class Compiler():
     def __init__(self):
         pass
     
-    def compile(self, src):
+    def compile(self, src: str):
         globalNames = getFunctions()
         localNames = []
         parsed = ast.parse(src)
         return self._compile(parsed.body, globalNames, localNames)
     
-    def _compile(self, block: Block, globalNames, localNames):
+    def _compile(self, block: Block, globalNames: dict, localNames: list):
         buffer = ''
         localNames.append({})
         blockBody = block.body
@@ -27,9 +27,9 @@ class Compiler():
                             if val == None:
                                 raise Exception(f'Function {l.values[i].func.id} doesn\'t exist.')
                         if type(l) == Assign:
-                            globalNames[l.targets[i].id] = evaluate(globalNames, localNames, val)
+                            globalNames[l.targets[i].id] = val
                         else:
-                            localNames[-1][l.targets[i].id] = evaluate(globalNames, localNames, val)
+                            localNames[-1][l.targets[i].id] = val
             elif type(l) == Call:
                 if l.func.id in globalNames.keys():
                     func = globalNames[l.func.id]
@@ -38,7 +38,7 @@ class Compiler():
         localNames = localNames[:-1]
         return buffer
     
-    def printChunk(self, src):
+    def printChunk(self, src: str):
         tree = ast.parse(src)
         print(ast.to_pretty_str(tree))
         return tree

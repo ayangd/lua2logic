@@ -2,7 +2,7 @@ from lua2logic.types import * # pylint: disable=unused-wildcard-import
 from lua2logic.functions import * # pylint: disable=unused-wildcard-import
 from luaparser.astnodes import * # pylint: disable=unused-wildcard-import
 
-def varCheck(globalNames, localNames, varName):
+def varCheck(globalNames: dict, localNames: list, varName):
     s = varName
     if isinstance(s, Name):
         s = s.id
@@ -13,7 +13,7 @@ def varCheck(globalNames, localNames, varName):
         return True
     raise Exception(s + ' is undefined.')
 
-def varConsume(globalNames, localNames, varName):
+def varConsume(globalNames: dict, localNames: list, varName):
     s = varName
     if isinstance(s, Name):
         s = s.id
@@ -33,7 +33,7 @@ def getLiteral(o):
         return o.n
     return o
 
-def varResolve(globalNames, localNames, varName):
+def varResolve(globalNames: dict, localNames: list, varName):
     s = varName
     if isinstance(s, Name):
         s = s.id
@@ -44,9 +44,10 @@ def varResolve(globalNames, localNames, varName):
         return globalNames[s]
     raise Exception(s + ' is undefined.')
 
-def evaluate(globalNames, localNames, o):
+def evaluate(globalNames: dict, localNames: list, o):
     if isinstance(o, Call):
-        return varResolve(globalNames, localNames, o.func).call(*tuple(map(lambda x: evaluate(globalNames, localNames, x), o.args)))
+        ret = varResolve(globalNames, localNames, o.func).call(*tuple(map(lambda x: evaluate(globalNames, localNames, x), o.args)))
+        return evaluate(globalNames, localNames, ret)
     if isinstance(o, Name):
         return varResolve(globalNames, localNames, o)
     return getLiteral(o)
